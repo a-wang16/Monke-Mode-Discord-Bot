@@ -33,15 +33,22 @@ async def sayname(ctx, user:discord.User):
 
 @client.command()
 async def cringe(ctx, user:discord.User):
-    if not user.id in crng:
-        crng[user.id] = {}
-        crng[user.id]['count'] = 0
-        
-    crng[user.id]['count'] += 1
-    
-    await ctx.send(f"{user.mention} is cringe! Cringe counter now at {crng[user.id]['count']}.")
+    userID = str(user.id)
+    for getID in crng:
+        if userID == getID:
+            crng[userID]['count'] += 1
+            break
+    else:
+        crng[userID] = {}
+        crng[userID]['count'] = 1
+
+    await ctx.send(f"{user.mention} is cringe! Cringe counter now at {crng[userID]['count']}.")
     
     with open('cringe.json','w') as f:
         json.dump(crng,f)
+        
+@client.command()
+async def echo(ctx, *, arg):
+    await ctx.send(arg)
 
 client.run(TOKEN)
