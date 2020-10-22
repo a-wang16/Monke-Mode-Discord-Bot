@@ -7,10 +7,15 @@ TOKEN = open("token.txt", "r").read()
 client = commands.Bot(command_prefix = 'm!')
 
 with open('cringe.json', 'r') as f:
-    crng = json.load(f)
+    try:
+        crng = json.load(f)
+    except ValueError:
+        crng = {}
+        crng['users'] = []
 
 @client.event
 async def on_ready():
+    await client.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name="the jungle"))
     print('We have logged in as {0.user}'.format(client))
 
 @client.event
@@ -18,34 +23,31 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('<:SillyChamp:743612208059252855>'):  
-        await message.channel.send('<:SillyChamp:743612208059252855>')
+#    if message.content.startswith('<:SillyChamp:743612208059252855>'):  
+#        await message.channel.send('<:SillyChamp:743612208059252855>')
         
     await client.process_commands(message)
-    
-@client.command()
-async def poggers(ctx):
-    await ctx.send('<:PogU:742244756599603210>')
     
 @client.command()
 async def sayname(ctx, user:discord.User):
     await ctx.send(f"Your name is {user.mention}")
 
 @client.command()
-async def cringe(ctx, user:discord.User):
-    userID = str(user.id)
-    for getID in crng:
-        if userID == getID:
-            crng[userID]['count'] += 1
-            break
+async def cringe(ctx, user:discord.User): 
+    if not user.id == 768625454701346846:
+        for getID in crng['users']:
+            if getID['id'] == user.id:
+                getID['count'] += 1
+                await ctx.send(f"{user.mention} is cringe! Cringe counter now at {getID['count']}.")
+                break
+        else:
+            crng['users'].append({'id': user.id, 'count': 1})
+            await ctx.send(f"{user.mention} is cringe! Cringe counter now at 1.")
+        
+        with open('cringe.json','w') as f:
+            json.dump(crng,f)
     else:
-        crng[userID] = {}
-        crng[userID]['count'] = 1
-
-    await ctx.send(f"{user.mention} is cringe! Cringe counter now at {crng[userID]['count']}.")
-    
-    with open('cringe.json','w') as f:
-        json.dump(crng,f)
+        await ctx.send('Fuck you.')
         
 @client.command()
 async def echo(ctx, *, arg):
