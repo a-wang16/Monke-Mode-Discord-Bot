@@ -48,7 +48,19 @@ async def cringe(ctx, user:discord.User):
             json.dump(crng,f)
     else:
         await ctx.send('Fuck you.')
-        
+
+@client.command()
+async def cringeList(ctx):
+    crngPos = 1
+    crngList = ' '
+    for getID in crng:
+        idToName = int(getID)
+        uName = client.get_user(idToName)
+        printCount = crng[getID]
+        crngList += f"{crngPos}. {uName.name} - {printCount}\n"
+        crngPos += 1
+    await ctx.send(crngList)
+
 @client.command()
 async def echo(ctx, *, arg):
     await ctx.send(arg)
