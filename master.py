@@ -25,7 +25,6 @@ async def on_message(message):
 
 #    if message.content.startswith('<:SillyChamp:743612208059252855>'):  
 #        await message.channel.send('<:SillyChamp:743612208059252855>')
-        
     await client.process_commands(message)
     
 @client.command()
@@ -49,17 +48,20 @@ async def cringe(ctx, user:discord.User):
     else:
         await ctx.send('Fuck you.')
 
-@client.command()
-async def cringeList(ctx):
+@client.command(aliases=['cringeList'])
+async def cringelist(ctx):
+    sorted_obj = dict(crng) 
+    sorted_obj['users'] = sorted(crng['users'], key=lambda x : x['count'], reverse=True)
     crngPos = 1
     crngList = ' '
-    for getID in crng:
-        idToName = int(getID)
-        uName = client.get_user(idToName)
-        printCount = crng[getID]
-        crngList += f"{crngPos}. {uName.name} - {printCount}\n"
+    for getID in sorted_obj['users']:
+        idToName = int(getID['id'])
+        uName = client.get_user(idToName).name
+        crngList += f"{crngPos}. {uName} - {getID['count']}\n"
         crngPos += 1
     await ctx.send(crngList)
+    with open('cringe.json','w') as f:
+            json.dump(sorted_obj,f)
 
 @client.command()
 async def echo(ctx, *, arg):
