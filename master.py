@@ -1,3 +1,4 @@
+#   Imports necessary components
 import discord
 from discord.ext import commands
 import os
@@ -15,7 +16,7 @@ with open('cringe.json', 'r') as f:
         crng = {}
         crng['users'] = []
 
-#   Keep as a relic for future programming
+#   Sets a status for the bot
 @client.event
 async def on_ready():
     await client.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name="the jungle"))
