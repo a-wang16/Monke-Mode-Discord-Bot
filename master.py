@@ -5,11 +5,14 @@ import os
 import json
 
 #   Pulls the token from set text file and defines a command prefix
-TOKEN = open("token.txt", "r").read()
+fileLOC = os.path.dirname(os.path.abspath(__file__))
+filename = os.path.join(fileLOC, "token.txt")
+TOKEN = open(filename, "r").read()
 client = commands.Bot(command_prefix = 'm!')
 
 #   Loads json files for commands
-with open('cringe.json', 'r') as f:
+filename = os.path.join(fileLOC, 'cringe.json')
+with open(filename, 'r') as f:
     try:
         crng = json.load(f)
     except ValueError:
@@ -20,7 +23,7 @@ with open('cringe.json', 'r') as f:
 @client.event
 async def on_ready():
     await client.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name="the jungle"))
-    print('We have logged in as {0.user}'.format(client))
+    print('You have logged in as {0.user}'.format(client))
 
 #   Reacts to user messages when they happen
 @client.event
